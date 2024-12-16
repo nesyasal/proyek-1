@@ -14447,4 +14447,17 @@ dl {
   -ms-flex-positive: 1;
   flex-grow: 1; }
 
+.profile .profile-overview .row {
+    margin-bottom: 20px;
+    font-size: 15px;
+  }
+  
+.profile .profile-overview .card-title {
+    color: #012970;
+  }
+  
+.profile .profile-overview .label {
+    font-weight: 600;
+    color: rgba(1, 41, 112, 0.6);
+  }
 /*# sourceMappingURL=style.css.map */

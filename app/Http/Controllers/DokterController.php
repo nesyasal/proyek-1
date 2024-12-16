@@ -75,6 +75,32 @@ class DokterController extends Controller
 		));
 	}
 
+	public function profile()
+	{
+		$user = Auth::user();
+
+		$doctor = DB::table('doctors')
+			->join('users', 'doctors.user_id', '=', 'users.id')
+			->where('doctors.user_id', $user->id)
+			->select(
+				'doctors.doctor_id',
+				'doctors.spesialisasi',
+				'users.name as nama_dokter',
+				'users.email',
+				'users.username',
+				'users.jenis_kelamin',
+				'users.tanggal_lahir',
+				'users.alamat',
+				'users.no_telepon'
+			)
+			->first();
+
+		return view('dokter.profile', compact(
+			'doctor',
+			'user'
+		));
+	}
+
 	public function respon($konsultasi_id)
 	{
 		$respon = DB::table('konsultasi')

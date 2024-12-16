@@ -76,6 +76,5 @@ Route::delete('admin/dashboard/deletekeluhan/{id}', [KonsultasiController::class
 Route::get('dokter/dashboard', [DokterController::class, 'dashboard'])->name('dokter.dashboard')->middleware('auth');
 Route::get('dokter/respon/{konsultasi_id}', [DokterController::class, 'respon'])->name('dokter.respon')->middleware('auth');
 Route::put('dokter/respon/{konsultasi_id}', [DokterController::class, 'responKeluhan'])->name('respon')->middleware('auth');
-
 Route::get('dokter/dashboard-laporan', [HomeController::class, 'dashboard_laporan_dokter'])->name('laporan.dashboard-laporan')->middleware('auth');
-
+Route::get('dokter/profile', [DokterController::class, 'profile'])->name('dokter.profile')->middleware('auth');

@@ -4,7 +4,7 @@
     <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
             <li class="nav-item nav-profile">
-                <a href="#" class="nav-link">
+                <a href="{{ route('dokter.profile') }}" class="nav-link">
                     <div class="nav-profile-image">
                         <img src="{{asset('assets/images/faces/face1.jpg')}}" alt="profile">
                         <span class="login-status online"></span>
