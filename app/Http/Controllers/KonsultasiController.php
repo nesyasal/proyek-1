@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Pasien;
 use App\Models\Konsultasi;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class KonsultasiController extends Controller
 {
@@ -145,5 +146,31 @@ class KonsultasiController extends Controller
 		$konsultasi->delete();
 
 		return redirect()->route('admin.dashboard-keluhan')->with('success', 'Data Keluhan Pasien berhasil dihapus');
+	}
+
+	public function generateDocument($id)
+	{
+		$consultation = DB::table('konsultasi')
+			->join('pasien', 'konsultasi.pasien_id', '=', 'pasien.pasien_id')
+			->join('users as pasien_users', 'pasien.user_id', '=', 'pasien_users.id')
+			->join('doctors', 'konsultasi.doctor_id', '=', 'doctors.doctor_id')
+			->join('users as doctor_users', 'doctors.user_id', '=', 'doctor_users.id')
+			->select(
+				'konsultasi.*',
+				'pasien_users.name as pasien_name',
+				'doctor_users.name as doctor_name'
+			)
+			->where('konsultasi.konsultasi_id', $id)
+			->first();
+
+		if (!$consultation) {
+			return redirect()->back()->with('error', 'Data konsultasi tidak ditemukan.');
+		}
+
+		// Load view and pass data
+		$pdf = Pdf::loadView('pasien.document-konsultasi', ['consultation' => $consultation]);
+
+		// Return the PDF download
+		return $pdf->download('konsultasi-dokter-' . $id . '.pdf');
 	}
 }

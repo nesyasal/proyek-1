@@ -27,6 +27,7 @@ Route::get('pasien/dashboardkeluhan', [KonsultasiController::class, 'dashboardKe
 Route::get('pasien/dashboard', [KonsultasiController::class, 'dashboard'])->name('pasien.dashboard')->middleware('auth');
 Route::post('pasien/tambahkeluhan', [KonsultasiController::class, 'tambahKeluhan'])->name('tambahKeluhan')->middleware('auth');
 Route::post('pasien/tambahreview', [ReviewController::class, 'tambahReview'])->name('tambahReview')->middleware('auth');
+Route::get('/pasien/konsultasi/{id}/pdf', [KonsultasiController::class, 'generateDocument'])->name('konsultasi.pdf');
 
 // Route untuk Admin
 Route::get('admin/home', [AdminController::class, 'home'])->name('admin.home')->middleware('auth');

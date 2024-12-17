@@ -62,7 +62,15 @@
 											@endif
 										</td>
 										<td>{{ $consultation->keluhan_pasien }}</td>
-										<td>{{ $consultation->balasan_dokter }}</td>
+										<td>
+											@if ($consultation->status == 'terjawab')
+											<a href="{{ route('konsultasi.pdf', $consultation->konsultasi_id) }}" class="btn btn-secondary">Download PDF</a>
+											@elseif ($consultation->status == 'reviewed')
+											<a href="{{ route('konsultasi.pdf', $consultation->konsultasi_id) }}" class="btn btn-secondary">Download PDF</a>
+											@else
+											<span> - </span>
+											@endif
+										</td>
 										<td>
 											@if ($consultation->status == 'terjawab')
 											<button class="btn btn-primary review-button" data-consultation-id="{{ $consultation->konsultasi_id }}">Review</button>
