@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Facade;
-
 return [
 
     /*
@@ -124,9 +122,5 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
-
-    Facade::defaultAliases()->merge([
-        'PDF' => \Barryvdh\DomPDF\Facade\Pdf::class,
-    ])->toArray()
 
 ];
