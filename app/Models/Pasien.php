@@ -25,4 +25,9 @@ class Pasien extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+	
+	public function konsultasi()
+    {
+        return $this->hasMany(Konsultasi::class, 'pasien_id');
+    }
 }

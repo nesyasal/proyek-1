@@ -227,4 +227,22 @@ class AdminController extends Controller
 
 		return view('admin.dashboard-keluhan', compact('consultations'));
 	}
+
+	public function approveUser($id)
+    {
+        // Update status pengguna menjadi 'approved'
+        $user = User::findOrFail($id);
+        $user->update(['status' => 'approved']);
+
+        return redirect()->route('admin.dashboard')->with('success', 'Pengguna berhasil disetujui');
+    }
+
+    public function rejectUser($id)
+    {
+        // Update status pengguna menjadi 'rejected'
+        $user = User::findOrFail($id);
+        $user->update(['status' => 'rejected']);
+
+        return redirect()->route('admin.dashboard')->with('success', 'Pengguna berhasil ditolak');
+    }
 }

@@ -26,6 +26,7 @@ class User extends Authenticatable
 		'alamat',
 		'no_telepon',
 		'tipe_pengguna',
+        'status',
     ];
 
     /**

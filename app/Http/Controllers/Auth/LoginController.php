@@ -19,6 +19,20 @@ class LoginController extends Controller
 		// validator request data email dan password (validasi)
 		$this->validator($request->all())->validate();
 
+		// Ambil pengguna berdasarkan email
+        $user = \App\Models\User::where('email', $request->email)->first();
+
+        // Validasi status pengguna sebelum login
+        if ($user && $user->status === 'rejected') {
+            return back()->withErrors([
+                'email' => 'Akun Anda telah ditolak oleh admin.',
+            ]);
+        } elseif ($user && $user->status === 'pending') {
+			return back()->withErrors([
+				'email' => 'Akun Anda belum di setujui oleh admin.'
+			]);
+		}
+
 		// kondisi untuk menentukan tipe pengguna dari user email yang digunakan
 		if (Auth::attempt($request->only('username', 'email', 'password'))) {
 			$user = Auth::user();
