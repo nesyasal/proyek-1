@@ -10,6 +10,7 @@ use App\Models\Pasien;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class DokterController extends Controller
 {
@@ -101,14 +102,80 @@ class DokterController extends Controller
 		));
 	}
 
+	public function updateProfile(Request $request)
+	{
+		$user = Auth::user();
+
+		// Validasi input
+		$request->validate([
+			'name' => 'required|string|max:255',
+			'email' => 'required|email|max:255',
+			'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+			'jenis_kelamin' => 'required|string|max:10',
+			'tanggal_lahir' => 'required|date',
+			'alamat' => 'required|string|max:255',
+			'no_telepon' => 'required|string|max:15',
+		]);
+
+		// Update data di table users
+		DB::table('users')->where('id', $user->id)->update([
+			'name' => $request->name,
+			'email' => $request->email,
+			'username' => $request->username,
+			'jenis_kelamin' => $request->jenis_kelamin,
+			'tanggal_lahir' => $request->tanggal_lahir,
+			'alamat' => $request->alamat,
+			'no_telepon' => $request->no_telepon,
+		]);
+
+		// Berikan respon sukses
+		return redirect()->back()->with('success', 'Profile updated successfully.');
+	}
+
+	public function updatePassword(Request $request)
+	{
+		// Validasi input dari user
+		$validated = $request->validate([
+			'current_password' => 'required',
+			'new_password' => 'required|min:8|confirmed',
+		]);
+
+		// Dapatkan pengguna yang sedang login
+		$user = Auth::user();
+
+		// Cek apakah password saat ini benar
+		if (!Hash::check($validated['current_password'], $user->password)) {
+			return back()->withErrors(['current_password' => 'Password saat ini salah.']);
+		}
+
+		// Update password baru menggunakan Query Builder
+		DB::table('users')
+			->where('id', $user->id)
+			->update(['password' => Hash::make($validated['new_password'])]);
+
+		// Kembalikan ke halaman sebelumnya dengan pesan sukses
+		return back()->with('success', 'Password berhasil diperbarui.');
+	}
+
 	public function respon($konsultasi_id)
 	{
 		$respon = DB::table('konsultasi')
 			->join('pasien', 'konsultasi.pasien_id', '=', 'pasien.pasien_id')
 			->join('users', 'users.id', '=', 'pasien.user_id')
 			->where('konsultasi.konsultasi_id', $konsultasi_id)
-			->select('users.name', 'users.jenis_kelamin', 'users.tanggal_lahir', 'users.alamat', 'users.no_telepon', 'pasien.asuransi', 
-			'pasien.riwayat_medis', 'konsultasi.tanggal_konsultasi', 'konsultasi.status', 'konsultasi.keluhan_pasien', 'konsultasi.konsultasi_id')
+			->select(
+				'users.name',
+				'users.jenis_kelamin',
+				'users.tanggal_lahir',
+				'users.alamat',
+				'users.no_telepon',
+				'pasien.asuransi',
+				'pasien.riwayat_medis',
+				'konsultasi.tanggal_konsultasi',
+				'konsultasi.status',
+				'konsultasi.keluhan_pasien',
+				'konsultasi.konsultasi_id'
+			)
 			->get();
 
 		return view('dokter.respon', compact('respon'));
@@ -137,8 +204,18 @@ class DokterController extends Controller
 		$doctors = DB::table('doctors')
 			->join('users', 'doctors.user_id', '=', 'users.id')
 			->where('users.tipe_pengguna', 'Dokter')
-			->select('users.name', 'users.email', 'users.jenis_kelamin', 'users.alamat', 'users.no_telepon',
-			 'users.tanggal_lahir', 'doctors.doctor_id', 'doctors.spesialisasi', 'doctors.kualifikasi', 'doctors.pengalaman')
+			->select(
+				'users.name',
+				'users.email',
+				'users.jenis_kelamin',
+				'users.alamat',
+				'users.no_telepon',
+				'users.tanggal_lahir',
+				'doctors.doctor_id',
+				'doctors.spesialisasi',
+				'doctors.kualifikasi',
+				'doctors.pengalaman'
+			)
 			->get();
 
 
