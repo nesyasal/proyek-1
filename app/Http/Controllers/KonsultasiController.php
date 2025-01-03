@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Pasien;
 use App\Models\Konsultasi;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class KonsultasiController extends Controller
 {

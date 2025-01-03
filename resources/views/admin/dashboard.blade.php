@@ -59,6 +59,17 @@
 										<td>{{ $user->alamat }}</td>
 										<td>{{ $user->no_telepon }}</td>
 										<td>{{ $user->tipe_pengguna }}</td>
+										<td>{{ $user->status }}</td>
+										<td>
+											@if($user->status == 'pending')
+												<a href="{{ route('admin.approveUser', $user->id) }}" class="btn btn-success">Approve</a>
+												<a href="{{ route('admin.rejectUser', $user->id) }}" class="btn btn-danger">Reject</a>
+											@else
+												<span class="badge {{ $user->status == 'approved' ? 'bg-success' : 'bg-danger' }}">
+													{{ ucfirst($user->status) }}
+												</span>
+											@endif
+										</td>
 										<td>
 											<a href="{{ route('admin.edit-pengguna', $user->id) }}" class="btn btn-primary">Edit</a>
 											<form action="{{ route('deletePengguna', $user->id) }}" method="POST" style="display:inline;">

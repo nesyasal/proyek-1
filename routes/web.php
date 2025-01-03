@@ -27,6 +27,7 @@ Route::get('pasien/dashboardkeluhan', [KonsultasiController::class, 'dashboardKe
 Route::get('pasien/dashboard', [KonsultasiController::class, 'dashboard'])->name('pasien.dashboard')->middleware('auth');
 Route::post('pasien/tambahkeluhan', [KonsultasiController::class, 'tambahKeluhan'])->name('tambahKeluhan')->middleware('auth');
 Route::post('pasien/tambahreview', [ReviewController::class, 'tambahReview'])->name('tambahReview')->middleware('auth');
+Route::get('/pasien/konsultasi/{id}/pdf', [KonsultasiController::class, 'generateDocument'])->name('konsultasi.pdf');
 
 // Route untuk Admin
 Route::get('admin/home', [AdminController::class, 'home'])->name('admin.home')->middleware('auth');
@@ -70,6 +71,9 @@ Route::post('admin/dashboard/addkeluhan', [AdminController::class, 'addKeluhan']
 Route::get('/admin/dashboard/editkeluhan/{konsultasi_id}', [KonsultasiController::class, 'formEditKeluhan'])->name('admin.edit-keluhan')->middleware('auth');
 Route::put('/admin/dashboard/editkeluhan/{konsultasi_id}', [KonsultasiController::class, 'updateKeluhan'])->name('updateKeluhan')->middleware('auth');
 Route::delete('admin/dashboard/deletekeluhan/{id}', [KonsultasiController::class, 'deleteKeluhan'])->name('deleteKeluhan')->middleware('auth');
+// Rute untuk persetujuan dan penolakan pengguna
+Route::get('/admin/approve-user/{id}', [AdminController::class, 'approveUser'])->name('admin.approveUser');
+Route::get('/admin/reject-user/{id}', [AdminController::class, 'rejectUser'])->name('admin.rejectUser');
 
 
 // Route untuk Dokter

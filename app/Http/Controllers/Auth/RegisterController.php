@@ -61,6 +61,8 @@ class RegisterController extends Controller
 			'alamat' => $validatedData['alamat'],
 			'no_telepon' => $validatedData['no_telepon'],
 			'tipe_pengguna' => 'Pasien',
+			'status' => 'pending', // status pengguna awalnya 'pending'
+			
 		]);
 
 		// Membuat entri baru di tabel pasien

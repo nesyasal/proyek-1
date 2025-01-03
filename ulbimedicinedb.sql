@@ -286,20 +286,21 @@ CREATE TABLE `users` (
   `tanggal_lahir` date DEFAULT NULL,
   `alamat` text DEFAULT NULL,
   `no_telepon` varchar(255) DEFAULT NULL,
-  `tipe_pengguna` enum('Dokter','Pasien','Admin') DEFAULT NULL
+  `tipe_pengguna` enum('Dokter','Pasien','Admin') DEFAULT NULL,
+  `status` enum('pending', 'approved', 'rejected') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data untuk tabel `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `created_at`, `updated_at`, `username`, `jenis_kelamin`, `tanggal_lahir`, `alamat`, `no_telepon`, `tipe_pengguna`) VALUES
-(1, 'Nesya Salma Ramadhani', 'nesyasr@gmail.com', '$2y$12$f3udVd7AwUrQgZFrjPQmbu.zNZFTEuG3V.5evGhU5bDdKPtx3dd9y', '2024-05-29 09:50:10', '2024-05-29 09:50:10', 'nesyasalma', 'Perempuan', '2005-10-05', 'Sarijadi', '6287758748345', 'Pasien'),
-(2, 'Valen Rionald', 'valenrio@ulbi.ac.id', '$2y$12$3.QVljfUiLV0dJsZsVBV2OJbwmN6UtAODId2Yzi6J1vL6.DVcqpFC', '2024-05-29 10:05:50', '2024-05-29 10:05:50', 'valenrionald', 'Laki-Laki', '2002-08-06', 'Sarijadi', '6289522910966', 'Admin'),
-(8, 'Rahma', 'rahma@email.com', '$2y$12$RvdhnoUxFbMvPtTj5G5oLOQHOvzp8XW2xoa.KZfsFLn/zMFFf14qe', '2024-05-29 21:10:04', '2024-05-29 21:10:04', 'rahma', 'Perempuan', NULL, 'Bandung', '6287758748345', 'Dokter'),
-(12, 'Richard Parker', 'richard@email.com', '$2y$12$qQTXkiX7G5pwbGxej1vYeeQBnvO7gSHM96oyqOa7XfVYPFNAsprjC', '2024-06-10 08:22:11', '2024-06-10 08:22:11', 'richard', 'Laki-Laki', '2024-06-10', 'Sarimanah', NULL, 'Dokter'),
-(13, 'Sofia the first', 'sofia@gmail.com', '$2y$12$CD7hBdJkqDmomAaGHBRUF.IJeFWajFmhEyYQQ.ul1Ay0GfWj7kCga', '2024-06-13 06:31:45', '2024-06-13 07:47:40', 'Sofiani', 'Perempuan', '2024-06-13', 'test', '09090', 'Pasien'),
-(14, 'Jasmin Firzani Audya', 'mamahdawuh@gmail.com', '$2y$12$xGNRnkFBtaggikRVCuAbpeQMmpe881J0z06dSochRXWILjH8ckjyy', '2024-06-16 19:59:05', '2024-06-16 20:00:48', 'audy', 'Perempuan', '2024-06-17', 'bekasi', '087752400171', 'Dokter');
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `created_at`, `updated_at`, `username`, `jenis_kelamin`, `tanggal_lahir`, `alamat`, `no_telepon`, `tipe_pengguna`, 'status') VALUES
+(1, 'Nesya Salma Ramadhani', 'nesyasr@gmail.com', '$2y$12$f3udVd7AwUrQgZFrjPQmbu.zNZFTEuG3V.5evGhU5bDdKPtx3dd9y', '2024-05-29 09:50:10', '2024-05-29 09:50:10', 'nesyasalma', 'Perempuan', '2005-10-05', 'Sarijadi', '6287758748345', 'Pasien', 'approved'),
+(2, 'Valen Rionald', 'valenrio@ulbi.ac.id', '$2y$12$3.QVljfUiLV0dJsZsVBV2OJbwmN6UtAODId2Yzi6J1vL6.DVcqpFC', '2024-05-29 10:05:50', '2024-05-29 10:05:50', 'valenrionald', 'Laki-Laki', '2002-08-06', 'Sarijadi', '6289522910966', 'Admin', 'approved'),
+(8, 'Rahma', 'rahma@email.com', '$2y$12$RvdhnoUxFbMvPtTj5G5oLOQHOvzp8XW2xoa.KZfsFLn/zMFFf14qe', '2024-05-29 21:10:04', '2024-05-29 21:10:04', 'rahma', 'Perempuan', NULL, 'Bandung', '6287758748345', 'Dokter', 'approved'),
+(12, 'Richard Parker', 'richard@email.com', '$2y$12$qQTXkiX7G5pwbGxej1vYeeQBnvO7gSHM96oyqOa7XfVYPFNAsprjC', '2024-06-10 08:22:11', '2024-06-10 08:22:11', 'richard', 'Laki-Laki', '2024-06-10', 'Sarimanah', NULL, 'Dokter', 'approved'),
+(13, 'Sofia the first', 'sofia@gmail.com', '$2y$12$CD7hBdJkqDmomAaGHBRUF.IJeFWajFmhEyYQQ.ul1Ay0GfWj7kCga', '2024-06-13 06:31:45', '2024-06-13 07:47:40', 'Sofiani', 'Perempuan', '2024-06-13', 'test', '09090', 'Pasien', 'approved'),
+(14, 'Jasmin Firzani Audya', 'mamahdawuh@gmail.com', '$2y$12$xGNRnkFBtaggikRVCuAbpeQMmpe881J0z06dSochRXWILjH8ckjyy', '2024-06-16 19:59:05', '2024-06-16 20:00:48', 'audy', 'Perempuan', '2024-06-17', 'bekasi', '087752400171', 'Dokter', 'approved');
 
 --
 -- Indexes for dumped tables
