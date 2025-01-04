@@ -148,7 +148,7 @@ class KonsultasiController extends Controller
 		return redirect()->route('admin.dashboard-keluhan')->with('success', 'Data Keluhan Pasien berhasil dihapus');
 	}
 
-	public function terimaKonsultasi($user, $konsultasiId)
+	public function terimaKonsultasi($konsultasiId)
 	{
 		$konsultasi = Konsultasi::findOrFail($konsultasiId);
 

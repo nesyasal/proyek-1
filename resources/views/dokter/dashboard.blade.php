@@ -96,7 +96,13 @@
                                             @endif
                                         </td>
                                         <td>{{ $konsul->keluhan_pasien }}</td>
-                                        <td><a href="{{ route('dokter.respon', $konsul->konsultasi_id) }}" class="btn btn-success">Lihat detail</a></td>
+                                        <td>
+                                            @if($konsul->status == 'belum dijawab')
+                                                <a href="{{ route('konsultasi.terima', $konsul->id) }}" class="btn btn-success">Terima Konsultasi</a>
+                                            @else
+                                                <button class="btn btn-secondary" disabled>Sudah Diterima</button>
+                                            @endif
+                                        </td>
                                     </tr>
                                     @endforeach
                                 </tbody>

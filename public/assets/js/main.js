@@ -1,4 +1,3 @@
-/**
 * Template Name: Medilab
 * Template URL: https://bootstrapmade.com/medilab-free-medical-bootstrap-theme/
 * Updated: Mar 17 2024 with Bootstrap v5.3.3

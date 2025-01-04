@@ -84,6 +84,8 @@ Route::get('dokter/dashboard-laporan', [HomeController::class, 'dashboard_lapora
 Route::get('dokter/profile', [DokterController::class, 'profile'])->name('dokter.profile')->middleware('auth');
 //chat
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'indexx'])->name('home');
+Route::post('/konsultasi/{konsultasiId}/terima', [KonsultasiController::class, 'terimaKonsultasi'])->name('konsultasi.terima');
+
 Route::get('/chat/{user}', [App\Http\Controllers\ChatController::class, 'chat'])->name('chat');
 Route::get('/chat/room/{room}', [App\Http\Controllers\ChatController::class, 'room'])->name('chat.room');
 Route::get('/chat/get/{room}', [App\Http\Controllers\ChatController::class, 'getChat'])->name('chat.get');
