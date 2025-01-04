@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Pasien;
 use App\Models\Konsultasi;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Str;
 
 class KonsultasiController extends Controller
 {
@@ -147,4 +147,56 @@ class KonsultasiController extends Controller
 
 		return redirect()->route('admin.dashboard-keluhan')->with('success', 'Data Keluhan Pasien berhasil dihapus');
 	}
+
+	public function terimaKonsultasi($user, $konsultasiId)
+	{
+		$konsultasi = Konsultasi::findOrFail($konsultasiId);
+
+		if ($konsultasi->status === 'belum dijawab') {
+			// Update status konsultasi
+			$konsultasi->status = 'diterima';
+			$konsultasi->save();
+
+			// Cek apakah room untuk konsultasi ini sudah ada
+			$room = DB::table('chat_rooms')
+			->where('name', 'Konsultasi: ' . $konsultasi->keluhan_pasien)
+			->first();
+
+			if (!$room) {
+				// Buat room baru jika belum ada
+				$uuid = Str::orderedUuid();
+				DB::table('chat_rooms')->insert([
+					'id' => $uuid,
+					'name' => 'Konsultasi: ' . $konsultasi->keluhan_pasien,
+					'created_at' => now(),
+					'updated_at' => now(),
+				]);
+			} else {
+				// Jika room sudah ada, gunakan ID yang ada
+				$uuid = $room->id;
+			}
+
+
+			// Tambahkan pengguna ke chat room
+			DB::table('chat_room_users')->insert([
+				[
+					'chat_room_id' => $uuid,
+					'user_id' => $konsultasi->pasien->user_id,
+					'created_at' => now(),
+					'updated_at' => now(),
+				],
+				[
+					'chat_room_id' => $uuid,
+					'user_id' => $konsultasi->doctor->user_id,
+					'created_at' => now(),
+					'updated_at' => now(),
+				],
+			]);
+
+			return redirect()->route('chat.room', ['room' => $uuid])->with('success', 'Konsultasi diterima dan chat room dibuat.');
+		}
+
+		return redirect()->back()->with('error', 'Konsultasi tidak valid.');
+	}
+
 }

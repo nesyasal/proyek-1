@@ -82,3 +82,10 @@ Route::get('dokter/respon/{konsultasi_id}', [DokterController::class, 'respon'])
 Route::put('dokter/respon/{konsultasi_id}', [DokterController::class, 'responKeluhan'])->name('respon')->middleware('auth');
 Route::get('dokter/dashboard-laporan', [HomeController::class, 'dashboard_laporan_dokter'])->name('laporan.dashboard-laporan')->middleware('auth');
 Route::get('dokter/profile', [DokterController::class, 'profile'])->name('dokter.profile')->middleware('auth');
+//chat
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'indexx'])->name('home');
+Route::get('/chat/{user}', [App\Http\Controllers\ChatController::class, 'chat'])->name('chat');
+Route::get('/chat/room/{room}', [App\Http\Controllers\ChatController::class, 'room'])->name('chat.room');
+Route::get('/chat/get/{room}', [App\Http\Controllers\ChatController::class, 'getChat'])->name('chat.get');
+Route::post('/chat/send', [App\Http\Controllers\ChatController::class, 'sendChat'])->name('chat.send');
+Route::get('/pasien/chat/{id}', [App\Http\Controllers\ChatController::class, 'chat'])->name('pasien.chat');

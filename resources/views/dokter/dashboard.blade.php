@@ -88,7 +88,13 @@
                                         <td>{{ $konsul->nama_pasien }}</td>
                                         <td>{{ $konsul->nama_dokter }}</td>
                                         <td>{{ $konsul->tanggal_konsultasi }}</td>
-                                        <td>{{ $konsul->status }}</td>
+                                        <td>
+                                            @if ($konsul->status == 'terjawab')
+                                                <a href="{{ route('chat', $konsul->konsultasi_id) }}" class="btn btn-primary">Mulai Chat</a>
+                                            @else
+                                                <button class="btn btn-danger" disabled>Belum Siap untuk Chat</button>
+                                            @endif
+                                        </td>
                                         <td>{{ $konsul->keluhan_pasien }}</td>
                                         <td><a href="{{ route('dokter.respon', $konsul->konsultasi_id) }}" class="btn btn-success">Lihat detail</a></td>
                                     </tr>

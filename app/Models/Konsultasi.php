@@ -31,4 +31,9 @@ class Konsultasi extends Model
 	{
 		return $this->belongsTo(Pasien::class, 'pasien_id');
 	}
+
+	public function chatRoom()
+	{
+		return $this->hasOne(ChatRoom::class, 'konsultasi_id', 'konsultasi_id');
+	}
 }
