@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Pasien;
 use App\Models\Konsultasi;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Str;
 
 class KonsultasiController extends Controller
 {
@@ -147,4 +147,56 @@ class KonsultasiController extends Controller
 
 		return redirect()->route('admin.dashboard-keluhan')->with('success', 'Data Keluhan Pasien berhasil dihapus');
 	}
+
+	public function terimaKonsultasi($konsultasiId)
+	{
+		$konsultasi = Konsultasi::with(['pasiens', 'doctors'])->findOrFail($konsultasiId);
+
+		if ($konsultasi->status === 'belum dijawab') {
+			// Update status konsultasi menjadi diterima
+			$konsultasi->status = 'terjawab';
+			$konsultasi->save();
+
+			// Cek apakah chat room untuk konsultasi ini sudah ada berdasarkan konsultasi_id
+			$room = DB::table('chat_rooms')
+				->where('konsultasi_id', $konsultasi->konsultasi_id)
+				->first();
+
+			$uuid = $room ? $room->id : Str::orderedUuid();
+
+			if (!$room) {
+				// Jika belum ada, buat chat room baru
+				DB::table('chat_rooms')->insert([
+					'id' => $uuid,
+					'name' => 'Konsultasi: ' . $konsultasi->keluhan_pasien,
+					'created_at' => now(),
+					'updated_at' => now(),
+				]);
+				$roomId = $uuid;
+			} else {
+				// Jika room sudah ada, gunakan ID yang ada
+				$roomId = $room->id;
+			}
+
+			// Tambahkan pengguna (pasien dan dokter) ke chat room jika belum ada
+			DB::table('chat_room_users')->Insert([
+				['chat_room_id' => $roomId,
+                'user_id' => $konsultasi->pasien->user_id,
+                'created_at' => now(),
+                'updated_at' => now(),],
+
+				['chat_room_id' => $roomId,
+                'user_id' => $konsultasi->dokter->user_id,
+                'created_at' => now(),
+                'updated_at' => now(),]
+			]);
+
+			// Redirect ke halaman chat room
+			return redirect()->route('chat', ['konsultasiId' => $konsultasiId])->with('success', 'Konsultasi diterima dan chat room dibuat.');
+		}
+
+    	return redirect()->back()->with('error', 'Konsultasi tidak valid atau sudah diterima.');	
+	}
+	
+
 }

@@ -12,6 +12,13 @@ use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
+	public function indexx()
+    {
+        $users = User::all();
+
+        return view('home', compact('users'));
+    }
+
     public function index()
 	{
 		$doctors = DB::table('doctors')

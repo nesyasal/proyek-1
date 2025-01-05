@@ -93,9 +93,7 @@
                                 <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 
                                     <!-- Profile Edit Form -->
-                                    <form method="POST" action="{{ route('dokter.profile.edit') }}">
-                                        @csrf
-                                        @method('PUT')
+                                    <form>
                                         <div class="row mb-3">
                                             <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
                                             <div class="col-md-8 col-lg-9">
@@ -113,42 +111,49 @@
                                                 <input name="name" type="text" class="form-control" id="name" value="{{ $doctor->nama_dokter }}">
                                             </div>
                                         </div>
+
                                         <div class="row mb-3">
                                             <label for="email" class="col-md-4 col-lg-3 col-form-label">Email</label>
                                             <div class="col-md-8 col-lg-9">
                                                 <input name="email" type="text" class="form-control" id="email" value="{{ $doctor->email }}">
                                             </div>
                                         </div>
+
                                         <div class="row mb-3">
-                                            <label for="username" class="col-md-4 col-lg-3 col-form-label">Username</label>
+                                            <label for="username" class="col-md-4 col-lg-3 col-form-label">Username</label> 
                                             <div class="col-md-8 col-lg-9">
                                                 <input name="username" type="text" class="form-control" id="username" value="{{ $doctor->username }}">
                                             </div>
                                         </div>
+
                                         <div class="row mb-3">
                                             <label for="jenis_kelamin" class="col-md-4 col-lg-3 col-form-label">Jenis Kelamin</label>
                                             <div class="col-md-8 col-lg-9">
                                                 <input name="jenis_kelamin" type="text" class="form-control" id="jenis_kelamin" value="{{ $doctor->jenis_kelamin }}">
                                             </div>
                                         </div>
+
                                         <div class="row mb-3">
                                             <label for="tanggal_lahir" class="col-md-4 col-lg-3 col-form-label">Tanggal Lahir</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="tanggal_lahir" type="date" class="form-control" id="tanggal_lahir" value="{{ $doctor->tanggal_lahir }}">
+                                                <input name="tanggal_lahir" type="text" class="form-control" id="tanggal_lahir" value="{{ $doctor->tanggal_lahir }}">
                                             </div>
                                         </div>
+
                                         <div class="row mb-3">
                                             <label for="alamat" class="col-md-4 col-lg-3 col-form-label">Alamat</label>
                                             <div class="col-md-8 col-lg-9">
                                                 <input name="alamat" type="text" class="form-control" id="alamat" value="{{ $doctor->alamat }}">
                                             </div>
                                         </div>
+
                                         <div class="row mb-3">
                                             <label for="no_telepon" class="col-md-4 col-lg-3 col-form-label">No. Telepon</label>
                                             <div class="col-md-8 col-lg-9">
                                                 <input name="no_telepon" type="text" class="form-control" id="no_telepon" value="{{ $doctor->no_telepon }}">
                                             </div>
                                         </div>
+
                                         <div class="text-center">
                                             <button type="submit" class="btn btn-primary">Save Changes</button>
                                         </div>
@@ -158,8 +163,8 @@
 
                                 <div class="tab-pane fade pt-3" id="profile-change-password">
                                     <!-- Change Password Form -->
-                                    <form method="POST" action="{{ route('dokter.reset-password') }}">
-                                        @csrf
+                                    <form>
+
                                         <div class="row mb-3">
                                             <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
                                             <div class="col-md-8 col-lg-9">

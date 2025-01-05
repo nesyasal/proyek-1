@@ -88,9 +88,21 @@
                                         <td>{{ $konsul->nama_pasien }}</td>
                                         <td>{{ $konsul->nama_dokter }}</td>
                                         <td>{{ $konsul->tanggal_konsultasi }}</td>
-                                        <td>{{ $konsul->status }}</td>
-                                        <td>{{ $konsul->keluhan_pasien }}</td>
-                                        <td><a href="{{ route('dokter.respon', $konsul->konsultasi_id) }}" class="btn btn-success">Lihat detail</a></td>
+                                        <td>
+                                            @if ($konsul->status == 'terjawab')
+                                                <a href="{{ route('chat',  ['konsultasiId' => $konsul->konsultasi_id]) }}" class="btn btn-primary">Mulai Chat</a>
+                                            @else
+                                                <button class="btn btn-danger" disabled>Belum Siap untuk Chat</button>
+                                            @endif
+                                        </td>
+                                        {{-- <td>{{ $konsul->keluhan_pasien }}</td>
+                                        <td><a href="{{ route('dokter.respon', $konsul->konsultasi_id) }}" class="btn btn-success">Lihat detail</a></td> --}}
+                                        <td>
+                                            <form action="{{ route('konsultasi.terima', $konsul->konsultasi_id) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="btn btn-success">Terima Konsultasi</button>
+                                            </form>
+                                        </td>
                                     </tr>
                                     @endforeach
                                 </tbody>

@@ -24,11 +24,16 @@ class Konsultasi extends Model
 
 	public function doctors()
 	{
-		return $this->belongsTo(Dokter::class, 'doctor_id');
+		return $this->belongsTo(Dokter::class, 'doctor_id', 'doctor_id');
 	}
 
 	public function pasiens()
 	{
-		return $this->belongsTo(Pasien::class, 'pasien_id');
+		return $this->belongsTo(Pasien::class, 'pasien_id', 'pasien_id');
+	}
+
+	public function chatRoom()
+	{
+		return $this->hasOne(ChatRoom::class, 'konsultasi_id', 'konsultasi_id');
 	}
 }
