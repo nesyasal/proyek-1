@@ -82,6 +82,10 @@ Route::get('dokter/respon/{konsultasi_id}', [DokterController::class, 'respon'])
 Route::put('dokter/respon/{konsultasi_id}', [DokterController::class, 'responKeluhan'])->name('respon')->middleware('auth');
 Route::get('dokter/dashboard-laporan', [HomeController::class, 'dashboard_laporan_dokter'])->name('laporan.dashboard-laporan')->middleware('auth');
 Route::get('dokter/profile', [DokterController::class, 'profile'])->name('dokter.profile')->middleware('auth');
+Route::put('dokter/profile/edit', [DokterController::class, 'updateProfile'])->name('dokter.profile.edit')->middleware('auth');
+Route::post('dokter/profile/reset-password', [DokterController::class, 'updatePassword'])->name('dokter.reset-password');
+
+
 //chat
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'indexx'])->name('home');
 Route::post('/konsultasi/{konsultasiId}/terima', [KonsultasiController::class, 'terimaKonsultasi'])->name('konsultasi.terima');

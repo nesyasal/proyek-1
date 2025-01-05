@@ -93,7 +93,9 @@
                                 <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 
                                     <!-- Profile Edit Form -->
-                                    <form>
+                                    <form method="POST" action="{{ route('dokter.profile.edit') }}">
+                                        @csrf
+                                        @method('PUT')
                                         <div class="row mb-3">
                                             <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
                                             <div class="col-md-8 col-lg-9">
@@ -136,7 +138,7 @@
                                         <div class="row mb-3">
                                             <label for="tanggal_lahir" class="col-md-4 col-lg-3 col-form-label">Tanggal Lahir</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input name="tanggal_lahir" type="text" class="form-control" id="tanggal_lahir" value="{{ $doctor->tanggal_lahir }}">
+                                                <input name="tanggal_lahir" type="date" class="form-control" id="tanggal_lahir" value="{{ $doctor->tanggal_lahir }}">
                                             </div>
                                         </div>
 
@@ -163,7 +165,9 @@
 
                                 <div class="tab-pane fade pt-3" id="profile-change-password">
                                     <!-- Change Password Form -->
-                                    <form>
+                                    <form method="POST" action="{{ route('dokter.reset-password') }}">
+                                        
+                                        @csrf
 
                                         <div class="row mb-3">
                                             <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
