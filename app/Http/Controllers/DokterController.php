@@ -134,27 +134,27 @@ class DokterController extends Controller
 
 	public function updatePassword(Request $request)
 	{
-		// Validasi input dari user
-		$validated = $request->validate([
-			'current_password' => 'required',
-			'new_password' => 'required|min:8|confirmed',
+		// Validasi input
+		$request->validate([
+			'password' => 'required|string|min:8', // Password saat ini
+			'newpassword' => 'required|string|min:8|different:password', // Password baru
+			'renewpassword' => 'required|string|same:newpassword', // Konfirmasi password baru
 		]);
 
-		// Dapatkan pengguna yang sedang login
+		// Ambil pengguna yang sedang login
 		$user = Auth::user();
 
-		// Cek apakah password saat ini benar
-		if (!Hash::check($validated['current_password'], $user->password)) {
-			return back()->withErrors(['current_password' => 'Password saat ini salah.']);
+		// Periksa apakah password saat ini cocok
+		if (!Hash::check($request->password, $user->password)) {
+			return back()->with('error', 'Kata sandi saat ini salah.');
 		}
 
-		// Update password baru menggunakan Query Builder
-		DB::table('users')
-			->where('id', $user->id)
-			->update(['password' => Hash::make($validated['new_password'])]);
+		// Update password pengguna
+		$user->password = Hash::make($request->newpassword);
+		$user->save();
 
-		// Kembalikan ke halaman sebelumnya dengan pesan sukses
-		return back()->with('success', 'Password berhasil diperbarui.');
+		// Redirect dengan pesan sukses
+		return back()->with('success', 'Kata sandi berhasil diubah.');
 	}
 
 	public function respon($konsultasi_id)
