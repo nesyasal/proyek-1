@@ -16,19 +16,34 @@ class ReviewController extends Controller
             'pesan' => 'required|string', // validasi review maksimal 255 karakter
         ]);
 
-        // membuat dan menyimpan review baru
-        $review = new Review();
-        $review->konsultasi_id = $request->konsultasi_id;
-        $review->rating = $request->rating;
-        $review->pesan = $request->pesan;
-        $review->save();
+        // Cek apakah review untuk konsultasi ini sudah ada
+        if (Review::where('konsultasi_id', $request->konsultasi_id)->exists()) {
+            return redirect()->back()->withErrors(['error' => 'Review sudah pernah dibuat untuk konsultasi ini.']);
+        }
 
-        // update status di tabel konsultasi menjadi 'reviewed'
+        // Simpan review
+        Review::create([
+            'konsultasi_id' => $request->konsultasi_id,
+            'rating' => $request->rating,
+            'pesan' => $request->pesan,
+        ]);
+
+        // Update status konsultasi
         $konsultasi = Konsultasi::find($request->konsultasi_id);
         $konsultasi->status = 'reviewed';
         $konsultasi->save();
 
         // redirect kembali dengan pesan sukses
         return redirect()->route('pasien.dashboard')->with('success', 'Review berhasil disimpan.');
+    }
+
+    public function create($konsultasiId)
+    {
+        // Validasi apakah konsultasi tersebut ada dan belum direview
+        $konsultasi = Konsultasi::where('konsultasi_id', $konsultasiId)
+        ->where('status', '!=', 'reviewed')
+        ->firstOrFail();
+
+        return view('review', compact('konsultasi'));
     }
 }

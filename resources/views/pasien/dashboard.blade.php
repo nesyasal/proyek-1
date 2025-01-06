@@ -72,12 +72,10 @@
 											@endif
 										</td>
 										<td>
-											@if ($consultation->status == 'terjawab')
-											<button class="btn btn-primary review-button" data-consultation-id="{{ $consultation->konsultasi_id }}">Review</button>
+											@if ($consultation->status == 'reviewed')
+											<button class="btn btn-success">Nilai: {{ $consultation->rating }}</button>
 											@elseif ($consultation->status == 'belum dijawab')
 											<button class="btn btn-danger">Keluhan Anda Belum Terjawab</button>
-											@elseif ($consultation->status == 'reviewed' && $consultation->rating)
-											<button class="btn btn-success">Nilai: {{ $consultation->rating }}</button>
 											@endif
 										</td>
 									</tr>

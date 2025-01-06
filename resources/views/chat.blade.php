@@ -74,7 +74,20 @@
                     <input type="text" name="text" class="form-control me-2" placeholder="Type a message...">
                     <button class="btn btn-primary">Send</button>
                 </form>
+                <?php
+                $user = Auth::user();
+                ?>
+                @auth
+                    @if($user->tipe_pengguna === 'Pasien')
+                        <a href="{{ route('review.create', ['konsultasiId' => $konsultasi->konsultasi_id]) }}" class="btn btn-danger">
+                            Akhiri Chat dan Berikan Review
+                        </a>
+                    @else
+                        <p class="text-muted">Hanya pasien yang dapat memberikan review.</p>
+                    @endif
+                @endauth
             </div>
+            
         </div>
     </div>
 
