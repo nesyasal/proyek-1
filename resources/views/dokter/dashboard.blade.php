@@ -78,7 +78,7 @@
                                         <th>Nama Dokter</th>
                                         <th>Tanggal Konsultasi</th>
                                         <th>Status</th>
-                                        <th>Keluhan Pasien</th>
+                                        <th>Permintaan</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -91,17 +91,25 @@
                                         <td>
                                             @if ($konsul->status == 'terjawab')
                                                 <a href="{{ route('chat',  ['konsultasiId' => $konsul->konsultasi_id]) }}" class="btn btn-primary">Mulai Chat</a>
-                                            @else
+                                            @elseif ($konsul->status == 'belum dijawab')
                                                 <button class="btn btn-danger" disabled>Belum Siap untuk Chat</button>
+                                            @elseif ($konsul->status == 'reviewed')
+                                                <button class="btn btn-secondary" disabled>Konsultasi Selesai</button>
                                             @endif
                                         </td>
                                         {{-- <td>{{ $konsul->keluhan_pasien }}</td>
                                         <td><a href="{{ route('dokter.respon', $konsul->konsultasi_id) }}" class="btn btn-success">Lihat detail</a></td> --}}
                                         <td>
-                                            <form action="{{ route('konsultasi.terima', $konsul->konsultasi_id) }}" method="POST">
-                                                @csrf
-                                                <button type="submit" class="btn btn-success">Terima Konsultasi</button>
-                                            </form>
+                                            @if ($konsul->status == 'belum dijawab')
+                                                <form action="{{ route('konsultasi.terima', $konsul->konsultasi_id) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-success">Terima Konsultasi</button>
+                                                </form>
+                                            @elseif ($konsul->status == 'terjawab')
+                                                <button class="btn btn-danger" disabled>Konsultasi Berlangsung</button>
+                                            @elseif ($konsul->status == 'reviewed')
+                                                <button class="btn btn-secondary" disabled>Konsultasi Selesai</button>
+                                            @endif
                                         </td>
                                     </tr>
                                     @endforeach

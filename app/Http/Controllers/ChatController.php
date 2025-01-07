@@ -12,7 +12,7 @@ class ChatController extends Controller
 {
     public function room($room) {
         // Get room
-        $room = DB::table('chat_rooms')->where('id', $room)->first();
+        $room = DB::table('chat_rooms')->where('id', $room)->firstOrFail();
 
         // Get users
         $users = DB::table('chat_room_users')->where('chat_room_id', $room->id)->get();
@@ -56,7 +56,7 @@ class ChatController extends Controller
 
         // Dapatkan room terkait (Anda bisa menggunakan name atau ID untuk mencari room)
         $room = DB::table('chat_rooms')
-            ->where('name', 'Konsultasi: ' . $konsultasi->keluhan_pasien)
+            ->where('konsultasi_id', $konsultasi->konsultasi_id)
             ->first();
 
         // Jika room belum ada, buat room baru
@@ -65,17 +65,21 @@ class ChatController extends Controller
             $room = DB::table('chat_rooms')->insert([
                 'id' => $uuid,
                 'name' => 'Konsultasi: ' . $konsultasi->keluhan_pasien,
+                'konsultasi_id' => $konsultasi->konsultasi_id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-            $roomId = $uuid;
-        } else {
-            $roomId = $room->id;
+            $room = DB::table('chat_rooms')->where('id', $uuid)->first();
+        }
+
+        // Pastikan room ditemukan
+        if (!$room) {
+            abort(500, 'Gagal membuat atau mengambil chat room.');
         }
 
         // Ambil pengguna yang terhubung dengan room ini
         $users = DB::table('chat_room_users')
-            ->where('chat_room_id', $roomId)
+            ->where('chat_room_id', $room->id)
             ->get();
 
         // Kirim data ke view
