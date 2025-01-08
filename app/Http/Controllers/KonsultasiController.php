@@ -186,6 +186,7 @@ class KonsultasiController extends Controller
 				DB::table('chat_rooms')->insert([
 					'id' => $uuid,
 					'name' => 'Konsultasi: ' . $konsultasi->keluhan_pasien,
+					'Konsultasi_id' => $konsultasi->konsultasi_id,
 					'created_at' => now(),
 					'updated_at' => now(),
 				]);
@@ -197,19 +198,15 @@ class KonsultasiController extends Controller
 
 			// Tambahkan pengguna (pasien dan dokter) ke chat room jika belum ada
 			DB::table('chat_room_users')->Insert([
-				[
-					'chat_room_id' => $roomId,
-					'user_id' => $konsultasi->pasien->user_id,
-					'created_at' => now(),
-					'updated_at' => now(),
-				],
+				['chat_room_id' => $roomId,
+                'user_id' => $konsultasi->pasiens->user_id,
+                'created_at' => now(),
+                'updated_at' => now(),],
 
-				[
-					'chat_room_id' => $roomId,
-					'user_id' => $konsultasi->dokter->user_id,
-					'created_at' => now(),
-					'updated_at' => now(),
-				]
+				['chat_room_id' => $roomId,
+                'user_id' => $konsultasi->doctors->user_id,
+                'created_at' => now(),
+                'updated_at' => now(),]
 			]);
 
 			// Redirect ke halaman chat room
