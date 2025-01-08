@@ -76,9 +76,11 @@
                                         <th>No</th>
                                         <th>Nama Pasien</th>
                                         <th>Nama Dokter</th>
+                                        <th>Keluhan Pasien</th>
                                         <th>Tanggal Konsultasi</th>
                                         <th>Status</th>
                                         <th>Permintaan</th>
+                                        <th>Hasil Penilaian</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -87,30 +89,32 @@
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $konsul->nama_pasien }}</td>
                                         <td>{{ $konsul->nama_dokter }}</td>
+                                        <td>{{ $konsul->keluhan_pasien }}</td>
                                         <td>{{ $konsul->tanggal_konsultasi }}</td>
                                         <td>
                                             @if ($konsul->status == 'terjawab')
-                                                <a href="{{ route('chat',  ['konsultasiId' => $konsul->konsultasi_id]) }}" class="btn btn-primary">Mulai Chat</a>
+                                            <a href="{{ route('chat',  ['konsultasiId' => $konsul->konsultasi_id]) }}" class="btn btn-primary">Mulai Chat</a>
                                             @elseif ($konsul->status == 'belum dijawab')
-                                                <button class="btn btn-danger" disabled>Belum Siap untuk Chat</button>
+                                            <button class="btn btn-danger" disabled>Belum Siap untuk Chat</button>
                                             @elseif ($konsul->status == 'reviewed')
-                                                <button class="btn btn-secondary" disabled>Konsultasi Selesai</button>
+                                            <button class="btn btn-secondary" disabled>Konsultasi Selesai</button>
                                             @endif
                                         </td>
                                         {{-- <td>{{ $konsul->keluhan_pasien }}</td>
                                         <td><a href="{{ route('dokter.respon', $konsul->konsultasi_id) }}" class="btn btn-success">Lihat detail</a></td> --}}
                                         <td>
                                             @if ($konsul->status == 'belum dijawab')
-                                                <form action="{{ route('konsultasi.terima', $konsul->konsultasi_id) }}" method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-success">Terima Konsultasi</button>
-                                                </form>
+                                            <form action="{{ route('konsultasi.terima', $konsul->konsultasi_id) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="btn btn-success">Terima Konsultasi</button>
+                                            </form>
                                             @elseif ($konsul->status == 'terjawab')
-                                                <button class="btn btn-danger" disabled>Konsultasi Berlangsung</button>
+                                            <button class="btn btn-danger" disabled>Konsultasi Berlangsung</button>
                                             @elseif ($konsul->status == 'reviewed')
-                                                <button class="btn btn-secondary" disabled>Konsultasi Selesai</button>
+                                            <button class="btn btn-secondary" disabled>Konsultasi Selesai</button>
                                             @endif
                                         </td>
+                                        <td>{{ $konsul->rating }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>

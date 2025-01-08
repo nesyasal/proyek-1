@@ -8,6 +8,7 @@ use App\Models\Pasien;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class PasienController extends Controller
 {
@@ -115,5 +116,60 @@ class PasienController extends Controller
 			'pasien',
 			'user'
 		));
+	}
+
+	public function updateProfile(Request $request)
+	{
+		$user = Auth::user();
+
+		// Validasi input
+		$request->validate([
+			'name' => 'required|string|max:255',
+			'email' => 'required|email|max:255',
+			'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+			'jenis_kelamin' => 'required|string|max:10',
+			'tanggal_lahir' => 'required|date',
+			'alamat' => 'required|string|max:255',
+			'no_telepon' => 'required|string|max:15',
+		]);
+
+		// Update data di table users
+		DB::table('users')->where('id', $user->id)->update([
+			'name' => $request->name,
+			'email' => $request->email,
+			'username' => $request->username,
+			'jenis_kelamin' => $request->jenis_kelamin,
+			'tanggal_lahir' => $request->tanggal_lahir,
+			'alamat' => $request->alamat,
+			'no_telepon' => $request->no_telepon,
+		]);
+
+		// Berikan respon sukses
+		return redirect()->back()->with('success', 'Profile updated successfully.');
+	}
+
+	public function updatePassword(Request $request)
+	{
+		// Validasi input
+		$request->validate([
+			'password' => 'required|string|min:8', // Password saat ini
+			'newpassword' => 'required|string|min:8|different:password', // Password baru
+			'renewpassword' => 'required|string|same:newpassword', // Konfirmasi password baru
+		]);
+
+		// Ambil pengguna yang sedang login
+		$user = Auth::user();
+
+		// Periksa apakah password saat ini cocok
+		if (!Hash::check($request->password, $user->password)) {
+			return back()->with('error', 'Kata sandi saat ini salah.');
+		}
+
+		// Update password pengguna
+		$user->password = Hash::make($request->newpassword);
+		$user->save();
+
+		// Redirect dengan pesan sukses
+		return back()->with('success', 'Kata sandi berhasil diubah.');
 	}
 }

@@ -16,7 +16,7 @@
 
                             <img src="{{asset('assets/images/faces/face1.jpg')}}" alt="Profile" class="rounded-circle">
                             <h2>{{ $pasien->nama_pasien }}</h2>
-                            <h3>{{ $pasien->riwayat_medis }}</h3>
+                            <h3>Pasien</h3>
                             <div class="social-links mt-2">
                                 <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
                                 <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
@@ -93,7 +93,9 @@
                                 <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 
                                     <!-- Profile Edit Form -->
-                                    <form>
+                                    <form action="{{ route('pasien.profile.edit') }}" method="POST">
+										@csrf
+										@method('PUT')
                                         <div class="row mb-3">
                                             <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
                                             <div class="col-md-8 col-lg-9">
@@ -156,7 +158,8 @@
 
                                 <div class="tab-pane fade pt-3" id="profile-change-password">
                                     <!-- Change Password Form -->
-                                    <form>
+                                    <form action="{{ route('pasien.reset-password') }}" method="POST">
+										@csrf
                                         <div class="row mb-3">
                                             <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
                                             <div class="col-md-8 col-lg-9">

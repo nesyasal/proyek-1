@@ -31,6 +31,8 @@ Route::get('/pasien/konsultasi/{id}/pdf', [KonsultasiController::class, 'generat
 Route::get('/review/{konsultasiId}/create', [ReviewController::class, 'create'])->name('review.create');
 Route::post('/review', [ReviewController::class, 'tambahReview'])->name('review.store');
 Route::get('/pasien/profile', [PasienController::class, 'profile'])->name('pasien.profile')->middleware('auth');
+Route::put('pasien/profile/edit', [PasienController::class, 'updateProfile'])->name('pasien.profile.edit')->middleware('auth');
+Route::post('pasien/profile/reset-password', [PasienController::class, 'updatePassword'])->name('pasien.reset-password');
 
 
 // Route untuk Admin
