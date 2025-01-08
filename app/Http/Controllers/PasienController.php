@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Pasien;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class PasienController extends Controller
 {
@@ -87,5 +88,32 @@ class PasienController extends Controller
 		$pasien->delete();
 
 		return redirect()->route('admin.pasien-dashboard')->with('success', 'Data pasien berhasil dihapus');
+	}
+
+	public function profile()
+	{
+		$user = Auth::user();
+
+		$pasien = DB::table('pasien')
+		->join('users', 'pasien.user_id', '=', 'users.id')
+		->where('pasien.user_id', $user->id)
+			->select(
+				'pasien.pasien_id',
+				'pasien.riwayat_medis',
+				'pasien.asuransi',
+				'users.name as nama_pasien',
+				'users.email',
+				'users.username',
+				'users.jenis_kelamin',
+				'users.tanggal_lahir',
+				'users.alamat',
+				'users.no_telepon'
+			)
+			->first();
+
+		return view('pasien.profile', compact(
+			'pasien',
+			'user'
+		));
 	}
 }

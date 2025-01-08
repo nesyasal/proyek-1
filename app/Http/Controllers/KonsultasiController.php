@@ -19,6 +19,23 @@ class KonsultasiController extends Controller
 		// Mendapatkan pasien_id dari tabel pasien berdasarkan user_id
 		$pasienId = Pasien::where('user_id', $userId)->value('pasien_id');
 
+		$pasien = DB::table('pasien')
+			->join('users', 'pasien.user_id', '=', 'users.id')
+			->where('pasien.user_id', $userId)
+			->select(
+				'pasien.pasien_id',
+				'pasien.riwayat_medis',
+				'pasien.asuransi',
+				'users.name as nama_pasien',
+				'users.email',
+				'users.username',
+				'users.jenis_kelamin',
+				'users.tanggal_lahir',
+				'users.alamat',
+				'users.no_telepon'
+			)
+			->first();
+
 		$consultations = Konsultasi::select(
 			'konsultasi.konsultasi_id',
 			'users_pasien.name as nama_pasien',
@@ -42,7 +59,7 @@ class KonsultasiController extends Controller
 			->where('pasien.pasien_id', $pasienId)
 			->get();
 
-		return view('pasien.dashboard', compact('consultations'));
+		return view('pasien.dashboard', compact('consultations', 'pasien'));
 	}
 
 	public function dashboardKeluhan()
@@ -180,23 +197,25 @@ class KonsultasiController extends Controller
 
 			// Tambahkan pengguna (pasien dan dokter) ke chat room jika belum ada
 			DB::table('chat_room_users')->Insert([
-				['chat_room_id' => $roomId,
-                'user_id' => $konsultasi->pasien->user_id,
-                'created_at' => now(),
-                'updated_at' => now(),],
+				[
+					'chat_room_id' => $roomId,
+					'user_id' => $konsultasi->pasien->user_id,
+					'created_at' => now(),
+					'updated_at' => now(),
+				],
 
-				['chat_room_id' => $roomId,
-                'user_id' => $konsultasi->dokter->user_id,
-                'created_at' => now(),
-                'updated_at' => now(),]
+				[
+					'chat_room_id' => $roomId,
+					'user_id' => $konsultasi->dokter->user_id,
+					'created_at' => now(),
+					'updated_at' => now(),
+				]
 			]);
 
 			// Redirect ke halaman chat room
 			return redirect()->route('chat', ['konsultasiId' => $konsultasiId])->with('success', 'Konsultasi diterima dan chat room dibuat.');
 		}
 
-    	return redirect()->back()->with('error', 'Konsultasi tidak valid atau sudah diterima.');	
+		return redirect()->back()->with('error', 'Konsultasi tidak valid atau sudah diterima.');
 	}
-	
-
 }

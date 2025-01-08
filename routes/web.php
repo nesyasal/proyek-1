@@ -30,6 +30,7 @@ Route::post('pasien/tambahreview', [ReviewController::class, 'tambahReview'])->n
 Route::get('/pasien/konsultasi/{id}/pdf', [KonsultasiController::class, 'generateDocument'])->name('konsultasi.pdf');
 Route::get('/review/{konsultasiId}/create', [ReviewController::class, 'create'])->name('review.create');
 Route::post('/review', [ReviewController::class, 'tambahReview'])->name('review.store');
+Route::get('/pasien/profile', [PasienController::class, 'profile'])->name('pasien.profile')->middleware('auth');
 
 
 // Route untuk Admin
