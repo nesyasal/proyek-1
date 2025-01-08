@@ -79,11 +79,11 @@
                 ?>
                 @auth
                     @if($user->tipe_pengguna === 'Pasien')
-                        <a href="{{ route('review.create', ['konsultasiId' => $konsultasi->konsultasi_id]) }}" class="btn btn-danger">
-                            Akhiri Chat dan Berikan Review
+                        <a href="{{ route('review.create', ['konsultasiId' => $konsultasi->konsultasi_id]) }}" class="btn btn-danger mt-1">
+                            Akhiri Chat
                         </a>
                     @else
-                        <p class="text-muted">Hanya pasien yang dapat memberikan review.</p>
+                    <input class="btn btn-danger mt-1" type="button" value="Go Back" onclick="history.back(-1)" />
                     @endif
                 @endauth
             </div>
