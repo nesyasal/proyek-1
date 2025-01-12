@@ -22,7 +22,7 @@ class AdminController extends Controller
 		$pasien = DB::table('users')->where('tipe_pengguna', 'Pasien')->count();
 
 		$keluhanterjawab = DB::table('konsultasi')->where('status', 'terjawab')->orWhere('status', 'reviewed')
-		->count();
+			->count();
 
 		$keluhanbelumdijawab = DB::table('konsultasi')->where('status', 'belum dijawab')->count();
 
@@ -53,7 +53,7 @@ class AdminController extends Controller
 
 	public function addDokter(Request $request)
 	{
-     
+
 		$users	 = User::create([
 			'nama' => $request->Nama,
 			'email' => $request->Email,
@@ -122,6 +122,9 @@ class AdminController extends Controller
 	{
 		$user = User::findOrFail($id);
 
+		// Debug untuk memastikan data yang diterima benar
+		// dd($request->all());
+
 		$this->validator($request->all(), $user->id)->validate();
 
 		$data = $request->except(['_token', '_method', 'password_confirmation']);
@@ -131,6 +134,9 @@ class AdminController extends Controller
 		} else {
 			unset($data['password']);
 		}
+
+		// Debug sebelum melakukan update
+		// dd($data);
 
 		$user->update($data);
 
@@ -175,20 +181,20 @@ class AdminController extends Controller
 		]);
 
 		$pasien = DB::table('pasien')
-            ->where('user_id', $request->pasien_id)
-            ->select('pasien_id')
-            ->first();
+			->where('user_id', $request->pasien_id)
+			->select('pasien_id')
+			->first();
 
-        // Ambil doctor_id dari tabel doctors
-        $doctor = DB::table('doctors')
-            ->where('user_id', $request->doctor_id)
-            ->select('doctor_id')
-            ->first();
+		// Ambil doctor_id dari tabel doctors
+		$doctor = DB::table('doctors')
+			->where('user_id', $request->doctor_id)
+			->select('doctor_id')
+			->first();
 
-        // Cek apakah pasien_id dan doctor_id ditemukan
-        if (!$pasien || !$doctor) {
-            return redirect()->back()->with('error', 'Pasien atau Dokter tidak ditemukan.');
-        }
+		// Cek apakah pasien_id dan doctor_id ditemukan
+		if (!$pasien || !$doctor) {
+			return redirect()->back()->with('error', 'Pasien atau Dokter tidak ditemukan.');
+		}
 
 		// Insert data ke dalam tabel konsultasi
 		DB::table('konsultasi')->insert([
@@ -206,21 +212,16 @@ class AdminController extends Controller
 	public function getKeluhan()
 	{
 		$consultations = Konsultasi::select(
-			'konsultasi_id',
+			'konsultasi.konsultasi_id',
 			'users_pasien.name as nama_pasien',
 			'users_dokter.name as nama_dokter',
 			'tanggal_konsultasi',
-			'status',
+			'konsultasi.status', // Pastikan menggunakan alias tabel yang benar
 			'keluhan_pasien',
 			'balasan_dokter'
 		)
 			->join('pasien', 'konsultasi.pasien_id', '=', 'pasien.pasien_id')
-			->join(
-				'doctors',
-				'konsultasi.doctor_id',
-				'=',
-				'doctors.doctor_id'
-			)
+			->join('doctors', 'konsultasi.doctor_id', '=', 'doctors.doctor_id')
 			->join('users as users_pasien', 'pasien.user_id', '=', 'users_pasien.id')
 			->join('users as users_dokter', 'doctors.user_id', '=', 'users_dokter.id')
 			->get();
@@ -229,20 +230,20 @@ class AdminController extends Controller
 	}
 
 	public function approveUser($id)
-    {
-        // Update status pengguna menjadi 'approved'
-        $user = User::findOrFail($id);
-        $user->update(['status' => 'approved']);
+	{
+		// Update status pengguna menjadi 'approved'
+		$user = User::findOrFail($id);
+		$user->update(['status' => 'approved']);
 
-        return redirect()->route('admin.dashboard')->with('success', 'Pengguna berhasil disetujui');
-    }
+		return redirect()->route('admin.dashboard')->with('success', 'Pengguna berhasil disetujui');
+	}
 
-    public function rejectUser($id)
-    {
-        // Update status pengguna menjadi 'rejected'
-        $user = User::findOrFail($id);
-        $user->update(['status' => 'rejected']);
+	public function rejectUser($id)
+	{
+		// Update status pengguna menjadi 'rejected'
+		$user = User::findOrFail($id);
+		$user->update(['status' => 'rejected']);
 
-        return redirect()->route('admin.dashboard')->with('success', 'Pengguna berhasil ditolak');
-    }
+		return redirect()->route('admin.dashboard')->with('success', 'Pengguna berhasil ditolak');
+	}
 }

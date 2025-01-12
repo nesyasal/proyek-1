@@ -27,6 +27,9 @@ class JadwalController extends Controller
 			)
 			->get();
 
+		// Debugging
+		// dd($jadwals);
+
 		return view('admin.dashboard-jadwal', compact('jadwals'));
 	}
 

@@ -22,9 +22,6 @@ class RegisterController extends Controller
 
 		$user = $this->create($request->all());
 
-		// Optionally, log the user in after registration
-		// auth()->login($user);
-
 		return redirect()->route('login');
 	}
 
@@ -39,7 +36,6 @@ class RegisterController extends Controller
 			'tanggal_lahir' => ['required', 'date'],
 			'alamat' => ['required', 'string'],
 			'no_telepon' => ['required', 'string', 'max:255'],
-			// Validasi untuk data pasien
 			'riwayat_medis' => ['required', 'string'],
 			'asuransi' => ['required', 'string'],
 		]);
@@ -47,10 +43,8 @@ class RegisterController extends Controller
 
 	protected function create(array $data)
 	{
-		// Validasi data
 		$validatedData = $this->validator($data)->validate();
 
-		// Membuat pengguna baru di tabel users
 		$user = User::create([
 			'name' => $validatedData['name'],
 			'email' => $validatedData['email'],
@@ -61,11 +55,10 @@ class RegisterController extends Controller
 			'alamat' => $validatedData['alamat'],
 			'no_telepon' => $validatedData['no_telepon'],
 			'tipe_pengguna' => 'Pasien',
-			'status' => 'pending', // status pengguna awalnya 'pending'
+			'status' => 'pending',
 			
 		]);
 
-		// Membuat entri baru di tabel pasien
 		Pasien::create([
 			'user_id' => $user->id,
 			'riwayat_medis' => $validatedData['riwayat_medis'],
