@@ -114,7 +114,17 @@
                                             <button class="btn btn-secondary" disabled>Konsultasi Selesai</button>
                                             @endif
                                         </td>
-                                        <td>{{ $konsul->rating }}</td>
+                                        <td>
+                                            @if ($konsul->status == 'belum dijawab')
+                                            <button class="btn btn-secondary">Belum di rating oleh Pasien</button>
+                                            @elseif ($konsul->status == 'reviewed')
+                                            <button class="btn btn-secondary" disabled>{{ $rating }}
+                                            </button>
+                                            @elseif ($konsul->status == 'terjawab')
+                                            <button class="btn btn-secondary" disabled>Belum di rating oleh Pasien
+                                            </button>
+                                            @endif
+                                        </td>
                                     </tr>
                                     @endforeach
                                 </tbody>

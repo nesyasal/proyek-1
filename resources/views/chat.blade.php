@@ -135,6 +135,7 @@
             const channel = pusher.subscribe('private-chat-room.{{ $room->id }}');
 
             channel.bind('chat-send', async () => {
+                console.log('Event received');
                 await getChat();
             });
 

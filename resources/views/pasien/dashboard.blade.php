@@ -64,11 +64,11 @@
 										<td>{{ $consultation->keluhan_pasien }}</td>
 										<td>
 											@if ($consultation->status == 'terjawab')
-												<a href="{{ route('chat',  ['konsultasiId' => $consultation->konsultasi_id]) }}" class="btn btn-primary">Mulai Chat</a>
+											<a href="{{ route('chat',  ['konsultasiId' => $consultation->konsultasi_id]) }}" class="btn btn-primary">Mulai Chat</a>
 											@elseif ($consultation->status == 'belum dijawab')
-												<button class="btn btn-danger" disabled>Menunggu Respon Dokter</button>
+											<button class="btn btn-danger" disabled>Menunggu Respon Dokter</button>
 											@elseif ($consultation->status == 'reviewed')
-												<button class="btn btn-secondary" disabled>Konsultasi Selesai</button>
+											<button class="btn btn-secondary" disabled>Konsultasi Selesai</button>
 											@endif
 										</td>
 										<td>
@@ -76,6 +76,8 @@
 											<button class="btn btn-success">Nilai: {{ $consultation->rating }}</button>
 											@elseif ($consultation->status == 'belum dijawab')
 											<button class="btn btn-danger">Keluhan Anda Belum Terjawab</button>
+											@elseif ($consultation->status == 'terjawab')
+											<button class="btn btn-secondary">belum di review</button>
 											@endif
 										</td>
 									</tr>

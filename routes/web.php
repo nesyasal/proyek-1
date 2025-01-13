@@ -98,3 +98,9 @@ Route::get('/chat/get/{room}', [App\Http\Controllers\ChatController::class, 'get
 Route::post('/chat/send', [App\Http\Controllers\ChatController::class, 'sendChat'])->name('chat.send');
 Route::get('/pasien/chat/{id}', [App\Http\Controllers\ChatController::class, 'chat'])->name('pasien.chat');
 Route::post('/konsultasi/terima/{id}', [KonsultasiController::class, 'terimaKonsultasi'])->name('konsultasi.terima');
+
+use Illuminate\Support\Facades\Broadcast;
+
+Broadcast::channel('chat-room.{roomId}', function ($user, $roomId) {
+    return true; // Ganti dengan logika otorisasi sesuai kebutuhan.
+});

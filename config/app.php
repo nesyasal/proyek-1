@@ -1,5 +1,7 @@
 <?php
 
+use App\Providers\BroadcastServiceProvider;
+
 return [
 
     /*

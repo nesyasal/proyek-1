@@ -30,12 +30,12 @@ class DokterController extends Controller
 			)
 			->first();
 
-			$konsultasi = DB::table('konsultasi as k')
+		$konsultasi = DB::table('konsultasi as k')
 			->join('pasien as p', 'k.pasien_id', '=', 'p.pasien_id')
 			->join('users as pu', 'p.user_id', '=', 'pu.id')
 			->join('doctors as d', 'k.doctor_id', '=', 'd.doctor_id')
 			->join('users as du', 'd.user_id', '=', 'du.id')
-			->join('review as r', 'k.konsultasi_id', '=', 'r.konsultasi_id')
+			// ->join('review as r', 'k.konsultasi_id', '=', 'r.konsultasi_id')
 			->where('k.doctor_id', $doctor->doctor_id)
 			->select(
 				'k.konsultasi_id',
@@ -43,11 +43,16 @@ class DokterController extends Controller
 				'k.status',
 				'k.keluhan_pasien',
 				'k.balasan_dokter',
-				'r.rating',
+				// 'r.rating',
 				'pu.name as nama_pasien',
 				'du.name as nama_dokter'
 			)
 			->get();
+
+		// dd($konsultasi);
+		$rating = DB::table('review')
+			->where('konsultasi_id')
+			->select('rating')->get();
 
 		$total_terjawab = DB::table('konsultasi')
 			->where('doctor_id', $doctor->doctor_id)
