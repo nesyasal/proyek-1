@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,12 +21,14 @@
         body {
             background-color: #f8f9fa;
         }
+
         .chat-container {
             background: #ffffff;
             border-radius: 10px;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
+
         .chat-header {
             background: #007bff;
             color: #fff;
@@ -33,33 +36,39 @@
             font-size: 1.25rem;
             font-weight: bold;
         }
+
         .chat-body {
             height: 400px;
             overflow-y: auto;
             padding: 15px;
             background-color: #f1f1f1;
         }
+
         .chat-footer {
             padding: 10px;
             background-color: #fff;
             border-top: 1px solid #dee2e6;
         }
+
         .message {
             padding: 10px 15px;
             border-radius: 20px;
             margin-bottom: 10px;
         }
+
         .message-user {
             background-color: #007bff;
             color: white;
             align-self: flex-end;
         }
+
         .message-other {
             background-color: #e9ecef;
             align-self: flex-start;
         }
     </style>
 </head>
+
 <body>
     <div id="app" class="container mt-5">
         <div class="chat-container mx-auto">
@@ -78,16 +87,16 @@
                 $user = Auth::user();
                 ?>
                 @auth
-                    @if($user->tipe_pengguna === 'Pasien')
-                        <a href="{{ route('review.create', ['konsultasiId' => $konsultasi->konsultasi_id]) }}" class="btn btn-danger mt-1">
-                            Akhiri Chat
-                        </a>
-                    @else
-                    <input class="btn btn-danger mt-1" type="button" value="Go Back" onclick="history.back(-1)" />
-                    @endif
+                @if($user->tipe_pengguna === 'Pasien')
+                <a href="{{ route('review.create', ['konsultasiId' => $konsultasi->konsultasi_id]) }}" class="btn btn-danger mt-1">
+                    Akhiri Chat
+                </a>
+                @else
+                <input class="btn btn-danger mt-1" type="button" value="Go Back" onclick="history.back(-1)" />
+                @endif
                 @endauth
             </div>
-            
+
         </div>
     </div>
 
@@ -123,7 +132,7 @@
                 cluster: "{{ env('PUSHER_APP_CLUSTER') }}"
             });
 
-            const channel = pusher.subscribe('chat-channel');
+            const channel = pusher.subscribe('private-chat-room.{{ $room->id }}');
 
             channel.bind('chat-send', async () => {
                 await getChat();
@@ -153,4 +162,5 @@
         });
     </script>
 </body>
+
 </html>
