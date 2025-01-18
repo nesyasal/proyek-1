@@ -5,6 +5,9 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
+use App\Models\Dokter;
+use App\Models\Konsultasi;
+use App\Models\Pasien;
 use Illuminate\Support\Facades\DB;
 
 class HomeTest extends TestCase
@@ -47,4 +50,60 @@ class HomeTest extends TestCase
 			});
 		});
 	}
+
+	 /** @test */
+	public function dashboard_laporan_displays_correct_data()
+    {
+        // Arrange: Buat data pasien, dokter, dan konsultasi
+        $userPasien = User::factory()->create(['tipe_pengguna' => 'Pasien']);
+        $pasien = Pasien::factory()->create(['user_id' => $userPasien->id]);
+
+        $userDokter = User::factory()->create(['tipe_pengguna' => 'Dokter']);
+        $dokter = Dokter::factory()->create(['user_id' => $userDokter->id]);
+
+        Konsultasi::factory()->create(["pasien_id" => $pasien->pasien_id, "doctor_id" => $dokter->doctor_id, "status" => "terjawab"]);
+        Konsultasi::factory()->create(["pasien_id" => $pasien->pasien_id, "doctor_id" => $dokter->doctor_id, "status" => "belum dijawab"]);
+
+		$this->actingAs($userPasien);
+        // Act: Akses route dashboard_laporan
+        $response = $this->get(route('admin.dashboard-laporan'));
+
+        // Assert: Periksa data yang dikirim ke view
+        $response->assertStatus(200);
+        $response->assertViewHasAll([
+            'sum_pasien',
+            'total_appoiment',
+            'total_pesan_blm_dijawab',
+            'total_dokter',
+            'consultations'
+        ]);
+    }
+
+    /** @test */
+    public function dashboard_laporan_dokter_displays_correct_data()
+    {
+        // Arrange: Buat data pasien, dokter, dan konsultasi
+        $userPasien = User::factory()->create(['tipe_pengguna' => 'Pasien']);
+        $pasien = Pasien::factory()->create(['user_id' => $userPasien->id]);
+
+        $userDokter = User::factory()->create(['tipe_pengguna' => 'Dokter']);
+        $dokter = Dokter::factory()->create(['user_id' => $userDokter->id]);
+
+        Konsultasi::factory()->create(["pasien_id" => $pasien->pasien_id, "doctor_id" => $dokter->doctor_id, "status" => "terjawab"]);
+
+        $this->actingAs($userDokter); // Set user Dokter sebagai pengguna yang sedang login
+
+        // Act: Akses route dashboard_laporan_dokter
+        $response = $this->get(route('laporan.dashboard-laporan'));
+
+        // Assert: Periksa data yang dikirim ke view
+        $response->assertStatus(200);
+        $response->assertViewHasAll([
+            'sum_pasien',
+            'total_appoiment',
+            'total_pesan_blm_dijawab',
+            'total_dokter',
+            'consultations'
+        ]);
+    }
 }
