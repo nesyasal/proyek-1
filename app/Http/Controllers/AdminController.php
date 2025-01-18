@@ -34,6 +34,7 @@ class AdminController extends Controller
 	public function dashboard()
 	{
 		$users = User::all();
+		Log::info('Users sent to view: ', $users->toArray()); // Debug log
 		return view('admin.dashboard', compact('users'));
 	}
 

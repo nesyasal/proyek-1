@@ -349,8 +349,11 @@ class AdminTest extends TestCase
 
         $response = $this->get(route('admin.dashboard'));
 
+		$response->dump();
+		
         $response->assertStatus(200);
         $response->assertViewHas('users', function ($users) {
+			Log::info('Users in view: ', $users->toArray()); // Debug log
             return $users->count() === 5;
         });
     }

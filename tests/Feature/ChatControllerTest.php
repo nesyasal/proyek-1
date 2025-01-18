@@ -23,31 +23,54 @@ class ChatControllerTest extends TestCase
 
     public function testRoomViewIsReturnedWithValidRoom()
     {
-        DB::table('konsultasi')->insert([
-            'konsultasi_id' => 1,
-            'pasien_id' => 1, // Sesuaikan dengan data pasien
-            'doctor_id' => 1, // Sesuaikan dengan data dokter
-            'tanggal_konsultasi' => now(),
-            'status' => 'belum dijawab',
-            'keluhan_pasien' => 'Keluhan dummy pasien',
-            'balasan_dokter' => null,
+        // Membuat user
+        $user = User::factory()->create();
+
+        // Membuat room
+        $roomId = (string) Str::uuid();
+        DB::table('chat_rooms')->insert([
+            'id' => $roomId,
+            'name' => 'Test Room',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-        
-        $room = DB::table('chat_rooms')->insertGetId([
-            'id' => Str::orderedUuid(),
-            'name' => 'Test Room',
-            'konsultasi_id' => 1, // Pastikan nilai ini valid
+
+        // Menambahkan user ke room
+        DB::table('chat_room_users')->insert([
+            'chat_room_id' => $roomId,
+            'user_id' => $user->id,
             'created_at' => now(),
-            'updated_at' => now()
+            'updated_at' => now(),
         ]);
 
-        $response = $this->get(route('chat.room', ['room' => $room]));
+        // Verifikasi data tersedia di database
+        $this->assertDatabaseHas('chat_rooms', ['id' => $roomId]);
+        $this->assertDatabaseHas('chat_room_users', [
+            'chat_room_id' => $roomId,
+            'user_id' => $user->id,
+        ]);
 
+        $user = User::factory()->create(['tipe_pengguna' => 'Dokter']);
+
+        // Aktifkan user
+        $this->actingAs($user);
+
+        // Panggil endpoint
+        $response = $this->get(route('chat.room', ['room' => $roomId]));
+
+        // Debug responsenya
+        $response->dump();
+
+        // Verifikasi response
         $response->assertStatus(200);
         $response->assertViewIs('chat');
-        $response->assertViewHas(['room', 'users']);
+        $response->assertViewHas('room', function ($viewRoom) use ($roomId) {
+            return $viewRoom->id === $roomId;
+        });
+
+        $response->assertViewHas('users', function ($viewUsers) use ($user) {
+            return $viewUsers->contains('id', $user->id);
+        });
     }
 
     public function testGetChatReturnsChatData()
