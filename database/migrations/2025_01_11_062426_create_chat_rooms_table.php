@@ -14,7 +14,7 @@ return new class extends Migration
 		Schema::create('chat_rooms', function (Blueprint $table) {
 			$table->uuid('id')->primary();
 			$table->string('name')->nullable();
-			$table->foreignId('konsultasi_id');
+			$table->foreignId('konsultasi_id')->nullable();
 			$table->timestamps();
 		});
     }
