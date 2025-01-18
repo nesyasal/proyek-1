@@ -279,37 +279,27 @@ class DokterTest extends TestCase
 
 	public function test_delete_dokter()
 	{
-		// Membuat admin untuk autentikasi
-		$admin = User::factory()->create([
-			'name' => 'Admin Name',
-			'email' => 'iniadmin@example.com',
-			'password' => bcrypt('password123'),
-			'tipe_pengguna' => 'Admin', // memastikan admin memiliki akses
-		]);
+		// Buat user admin dan login
+        $admin = User::factory()->create(['tipe_pengguna' => 'Admin']);
+        $this->actingAs($admin);
 
-		// Autentikasi sebagai admin
-		$this->actingAs($admin);
+        // Buat dokter
+        $dokter = Dokter::factory()->create();
 
-		// Membuat user yang akan dihapus
-		$user = User::factory()->create([
-			'name' => 'User to Delete',
-			'email' => 'usertodelete@example.com',
-			'password' => bcrypt('password123'),
-		]);
+        // Kirim permintaan untuk menghapus dokter
+        $response = $this->delete(route('deleteDokter', ['doctor_id' => $dokter->doctor_id]));
 
-		// Melakukan request untuk menghapus user
-		$response = $this->delete(route('deletePengguna', ['id' => $user->id]));
+        // Verifikasi redirect dan pesan sukses
+        $response->assertRedirect(route('admin.dashboard-dokter'));
+        $response->assertSessionHas('success', 'Data dokter berhasil dihapus');
 
-		// Memastikan pengalihan ke halaman dashboard admin
-		$response->assertRedirect(route('admin.dashboard'));
+        // Pastikan dokter telah dihapus dari database
+        $this->assertDatabaseMissing('doctors', ['doctor_id' => $dokter->doctor_id]);
 
-		// Memastikan pesan sukses ada di session
-		$response->assertSessionHas('success', 'Data pengguna berhasil dihapus');
+        // Coba hapus dokter yang tidak ada
+        $response = $this->delete(route('deleteDokter', ['doctor_id' => 999]));
 
-		// Memastikan pengguna benar-benar dihapus dari database
-		$this->assertDatabaseMissing('users', [
-			'id' => $user->id,
-			'email' => 'usertodelete@example.com',
-		]);
+        // Verifikasi status 404 untuk dokter yang tidak ditemukan
+        $response->assertStatus(404);
 	}
 }

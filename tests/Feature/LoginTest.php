@@ -143,4 +143,36 @@ class LoginTest extends TestCase
 		$response->assertSessionHasErrors(['email']);
 		$this->assertGuest();
 	}
+
+	public function test_user_can_logout_successfully()
+    {
+        // Buat user dan login
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $oldToken = session('_token');
+
+        // Kirim permintaan logout
+        $response = $this->post(route('logout'));
+
+        // Verifikasi
+        $response->assertRedirect(route('login')); // Pastikan diarahkan ke halaman login
+        $this->assertGuest(); // Pastikan pengguna telah logout
+
+        // Pastikan sesi telah dihapus
+		$newToken = session('_token');
+		$this->assertNotEquals($oldToken, $newToken, 'Token sesi tidak diperbarui setelah logout.');
+    }
+
+	public function test_show_login_form_displays_correct_view()
+    {
+        // Kirim permintaan GET ke rute login
+        $response = $this->get(route('login'));
+
+        // Verifikasi status respons
+        $response->assertStatus(200);
+
+        // Verifikasi bahwa view yang benar ditampilkan
+        $response->assertViewIs('auth.login');
+    }
 }
