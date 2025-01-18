@@ -45,4 +45,17 @@ class UserTest extends TestCase
             $this->assertTrue($user->doctors->contains($doctor));
         }
     }
+
+    public function it_belongs_to_a_user()
+    {
+        // Buat user
+        $user = User::factory()->create();
+
+        // Buat pasien terkait dengan user
+        $pasien = Pasien::factory()->create(['user_id' => $user->id]);
+
+        // Verifikasi hubungan user
+        $this->assertInstanceOf(User::class, $pasien->user);
+        $this->assertEquals($user->id, $pasien->user->id);
+    }
 }
