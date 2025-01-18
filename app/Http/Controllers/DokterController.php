@@ -183,21 +183,21 @@ class DokterController extends Controller
 		return view('dokter.respon', compact('respon'));
 	}
 
-	public function responKeluhan(Request $request, $konsultasi_id)
-	{
+	// public function responKeluhan(Request $request, $konsultasi_id)
+	// {
 
-		$doctors = konsultasi::findOrFail($konsultasi_id);
+	// 	$doctors = konsultasi::findOrFail($konsultasi_id);
 
-		// Update data pasien
-		$doctors->update([
-			'status' => 'terjawab',
-			'balasan_dokter' => $request->respon
-		]);
-		//dd($request->respon);
+	// 	// Update data pasien
+	// 	$doctors->update([
+	// 		'status' => 'terjawab',
+	// 		'balasan_dokter' => $request->respon
+	// 	]);
+	// 	//dd($request->respon);
 
-		// Redirect ke halaman dashboard dengan pesan sukses
-		return redirect()->route('dokter.dashboard')->with('success', 'Data dokter berhasil diperbarui');
-	}
+	// 	// Redirect ke halaman dashboard dengan pesan sukses
+	// 	return redirect()->route('dokter.dashboard')->with('success', 'Data dokter berhasil diperbarui');
+	// }
 
 
 	// Dashboard dokter di admin

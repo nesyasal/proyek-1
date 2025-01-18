@@ -27,7 +27,31 @@ class ReviewControllerTest extends TestCase
         // Verifikasi
         $response->assertStatus(200);
         $response->assertViewIs('review');
-        $response->assertViewHas('konsultasi', $konsultasi);
+        $response->assertViewHas('konsultasi', function ($viewKonsultasi) use ($konsultasi) {
+            return $viewKonsultasi->konsultasi_id === $konsultasi->konsultasi_id;
+        });
+    }
+
+    public function test_cannot_create_review_if_already_exists()
+    {
+        // Buat user dan login
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        // Buat konsultasi dan review
+        $konsultasi = Konsultasi::factory()->create(['status' => 'terjawab']);
+        Review::factory()->create(['konsultasi_id' => $konsultasi->konsultasi_id]);
+
+        // Kirim permintaan review
+        $response = $this->post(route('tambahReview'), [
+            'konsultasi_id' => $konsultasi->konsultasi_id,
+            'rating' => '5',
+            'pesan' => 'Layanan sangat baik.',
+        ]);
+
+        // Verifikasi
+        $response->assertRedirect();
+        $response->assertSessionHasErrors(['error' => 'Review sudah pernah dibuat untuk konsultasi ini.']);
     }
 
     public function test_tambah_review_stores_review_and_updates_consultation_status()
