@@ -302,4 +302,54 @@ class DokterTest extends TestCase
         // Verifikasi status 404 untuk dokter yang tidak ditemukan
         $response->assertStatus(404);
 	}
+
+	public function test_showAddDokterForm()
+    {
+        // Buat user admin dan login
+        $admin = User::factory()->create(['tipe_pengguna' => 'Admin']);
+        $this->actingAs($admin);
+
+        // Buat beberapa dokter
+        $dokter1 = User::factory()->create(['tipe_pengguna' => 'Dokter']);
+        $dokter2 = User::factory()->create(['tipe_pengguna' => 'Dokter']);
+
+        // Kirim permintaan ke route untuk menampilkan form tambah dokter
+        $response = $this->get(route('admin.tambah-dokter'));
+
+        // Verifikasi
+        $response->assertStatus(200);
+        $response->assertViewIs('admin.tambah-dokter');
+        $response->assertViewHas('dokter', function ($viewDokter) use ($dokter1, $dokter2) {
+            return $viewDokter->contains($dokter1) && $viewDokter->contains($dokter2);
+        });
+    }
+
+	public function test_showEditDokterForm(){
+		// Buat user admin dan login
+        $admin = User::factory()->create(['tipe_pengguna' => 'Admin']);
+        $this->actingAs($admin);
+
+        // Buat dokter dengan relasi user
+        $user = User::factory()->create(['tipe_pengguna' => 'Dokter']);
+        $dokter = Dokter::factory()->create(['user_id' => $user->id]);
+
+        // Kirim permintaan untuk mengakses form edit dokter
+        $response = $this->get(route('admin.edit-dokter', ['doctor_id' => $dokter->doctor_id]));
+
+        // Verifikasi respons untuk dokter yang valid
+        $response->assertStatus(200);
+        $response->assertViewIs('admin.edit-dokter');
+        $response->assertViewHas('doctors', function ($viewDokter) use ($dokter) {
+            return $viewDokter->doctor_id === $dokter->doctor_id;
+        });
+
+        // Kirim permintaan untuk dokter yang tidak ada
+        $response = $this->get(route('admin.edit-dokter', ['doctor_id' => 999]));
+        $response->assertStatus(404);
+
+        // Kirim permintaan tanpa autentikasi
+        auth()->logout();
+        $response = $this->get(route('admin.edit-dokter', ['doctor_id' => $dokter->doctor_id]));
+        $response->assertRedirect(route('login'));
+	}
 }
