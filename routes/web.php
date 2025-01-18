@@ -76,7 +76,7 @@ Route::get('admin/dashboard/addkeluhan', [AdminController::class, 'showTambahKel
 Route::post('admin/dashboard/addkeluhan', [AdminController::class, 'addKeluhan'])->name('addKeluhan')->middleware('auth');
 Route::get('/admin/dashboard/editkeluhan/{konsultasi_id}', [KonsultasiController::class, 'formEditKeluhan'])->name('admin.edit-keluhan')->middleware('auth');
 Route::put('/admin/dashboard/editkeluhan/{konsultasi_id}', [KonsultasiController::class, 'updateKeluhan'])->name('updateKeluhan')->middleware('auth');
-Route::delete('admin/dashboard/deletekeluhan/{id}', [KonsultasiController::class, 'deleteKeluhan'])->name('deleteKeluhan')->middleware('auth');
+Route::delete('admin/dashboard/deletekeluhan/{KonsultasiId}', [KonsultasiController::class, 'deleteKeluhan'])->name('deleteKeluhan')->middleware('auth');
 // Rute untuk persetujuan dan penolakan pengguna
 Route::get('/admin/approve-user/{id}', [AdminController::class, 'approveUser'])->name('admin.approveUser');
 Route::get('/admin/reject-user/{id}', [AdminController::class, 'rejectUser'])->name('admin.rejectUser');
@@ -97,4 +97,4 @@ Route::get('/chat/room/{room}', [App\Http\Controllers\ChatController::class, 'ro
 Route::get('/chat/get/{room}', [App\Http\Controllers\ChatController::class, 'getChat'])->name('chat.get');
 Route::post('/chat/send', [App\Http\Controllers\ChatController::class, 'sendChat'])->name('chat.send');
 Route::get('/pasien/chat/{id}', [App\Http\Controllers\ChatController::class, 'chat'])->name('pasien.chat');
-Route::post('/konsultasi/terima/{id}', [KonsultasiController::class, 'terimaKonsultasi'])->name('konsultasi.terima');
+Route::post('/konsultasi/terima/{KonsultasiId}', [KonsultasiController::class, 'terimaKonsultasi'])->name('konsultasi.terima');
