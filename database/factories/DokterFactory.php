@@ -22,7 +22,7 @@ class DokterFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(), // Membuat user dummy menggunakan factory User
+            'user_id' => User::factory()->create(['tipe_pengguna' => 'Dokter'])->id, // Membuat user dummy menggunakan factory User
             'spesialisasi' => $this->faker->word(), // Spesialisasi dokter (contoh: "kardiologi")
             'kualifikasi' => $this->faker->words(3, true), // Kualifikasi (contoh: "Sarjana Kedokteran Umum")
             'pengalaman' => $this->faker->sentence(), // Pengalaman (contoh: "5 tahun sebagai dokter umum")

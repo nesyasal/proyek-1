@@ -274,6 +274,147 @@ class AdminTest extends TestCase
 			});
 		});
 	}
+
+	public function testApproveUserUpdatesStatusToApproved()
+    {
+        // Membuat user dengan status 'pending'
+        $user = User::factory()->create(['status' => 'pending']);
+
+        // Login sebagai admin
+        $admin = User::factory()->create(['tipe_pengguna' => 'Admin']);
+        $this->actingAs($admin);
+
+        // Kirim permintaan untuk menyetujui user
+        $response = $this->get(route('admin.approveUser', ['id' => $user->id]));
+
+        // Periksa respons dan redirect
+        $response->assertRedirect(route('admin.dashboard'));
+        $response->assertSessionHas('success', 'Pengguna berhasil disetujui');
+
+        // Periksa apakah status user berubah menjadi 'approved'
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'status' => 'approved',
+        ]);
+    }
+
+    public function testRejectUserUpdatesStatusToRejected()
+    {
+        // Membuat user dengan status 'pending'
+        $user = User::factory()->create(['status' => 'pending']);
+
+        // Login sebagai admin
+        $admin = User::factory()->create(['tipe_pengguna' => 'Admin']);
+        $this->actingAs($admin);
+
+        // Kirim permintaan untuk menolak user
+        $response = $this->get(route('admin.rejectUser', ['id' => $user->id]));
+
+        // Periksa respons dan redirect
+        $response->assertRedirect(route('admin.dashboard'));
+        $response->assertSessionHas('success', 'Pengguna berhasil ditolak');
+
+        // Periksa apakah status user berubah menjadi 'rejected'
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'status' => 'rejected',
+        ]);
+    }
+
+	public function testHomeDisplaysCorrectData()
+    {
+		$admin = User::factory()->create(['tipe_pengguna' => 'Admin']);
+		$this->actingAs($admin);
+        User::factory()->count(3)->create();
+        User::factory()->create(['tipe_pengguna' => 'Dokter']);
+        User::factory()->create(['tipe_pengguna' => 'Pasien']);
+        Konsultasi::factory()->count(2)->create(['status' => 'terjawab']);
+        Konsultasi::factory()->create(['status' => 'reviewed']);
+        Konsultasi::factory()->create(['status' => 'belum dijawab']);
+
+        $response = $this->get(route('admin.home'));
+
+        $response->assertStatus(200);
+        $response->assertViewHasAll([
+            'pengguna', 'dokter', 'pasien', 'keluhanterjawab', 'keluhanbelumdijawab', 'keluhanrated'
+        ]);
+    }
+
+    public function testDashboardDisplaysAllUsers()
+    {
+		$admin = User::factory()->create(['tipe_pengguna' => 'Admin']);
+		$this->actingAs($admin);
+		
+        User::factory()->count(5)->create();
+
+        $response = $this->get(route('admin.dashboard'));
+
+        $response->assertStatus(200);
+        $response->assertViewHas('users', function ($users) {
+            return $users->count() === 5;
+        });
+    }
+
+    public function testShowAddPenggunaFormDisplaysForm()
+    {
+		$admin = User::factory()->create(['tipe_pengguna' => 'Admin']);
+		$this->actingAs($admin);
+        $response = $this->get(route('admin.tambah-pengguna'));
+
+        $response->assertStatus(200);
+        $response->assertViewIs('admin.tambah-pengguna');
+    }
+
+    public function testAddDokterStoresData()
+    {
+		$admin = User::factory()->create(['tipe_pengguna' => 'Admin']);
+		$this->actingAs($admin);
+        $data = [
+            'Nama' => 'Dr. Test',
+            'Email' => 'drtest@example.com',
+            'Password' => 'password',
+            'password_confirmation' => 'password',
+            'Spesialisasi' => 'Kardiologi',
+            'Kualifikasi' => 'Sarjana Kedokteran',
+            'Pengalaman' => '5 tahun',
+        ];
+
+        $response = $this->post(route('addDokter'), $data);
+
+        $response->assertRedirect(route('admin.dashboard-dokter'));
+        $response->assertSessionHas('success', 'Dokter berhasil ditambahkan');
+
+        $this->assertDatabaseHas('users', ['email' => 'drtest@example.com']);
+        $this->assertDatabaseHas('doctors', ['spesialisasi' => 'Kardiologi']);
+    }
+
+    public function testShowEditPenggunaFormDisplaysForm()
+    {
+		$admin = User::factory()->create(['tipe_pengguna' => 'Admin']);
+		$this->actingAs($admin);
+        $user = User::factory()->create();
+
+        $response = $this->get(route('admin.edit-pengguna', ['id' => $user->id]));
+
+        $response->assertStatus(200);
+        $response->assertViewHas('users', function ($viewUser) use ($user) {
+            return $viewUser->id === $user->id;
+        });
+    }
+
+    public function testShowTambahKeluhanFormDisplaysCorrectData()
+    {
+		$admin = User::factory()->create(['tipe_pengguna' => 'Admin']);
+		$this->actingAs($admin);
+        $pasien = Pasien::factory()->count(2)->create();
+        Dokter::factory()->count(2)->create();
+
+        $response = $this->get(route('admin.tambah-keluhan'));
+
+        $response->assertStatus(200);
+        $response->assertViewHas('pasien');
+        $response->assertViewHas('doctors');
+    }
 }
 
 ?>

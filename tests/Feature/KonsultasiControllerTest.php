@@ -156,4 +156,38 @@ class KonsultasiControllerTest extends TestCase
             'konsultasi_id' => $konsultasi->konsultasi_id,
         ]);
     }
+
+    public function testDashboardKeluhanDisplaysCorrectData()
+    {
+         /** @var \App\Models\User $user */
+        // Membuat user dengan tipe pengguna "Pasien"
+        $user = User::factory()->create(['tipe_pengguna' => 'Pasien']);
+
+        // Membuat pasien yang terkait dengan user
+        $pasien = Pasien::factory()->create(['user_id' => $user->id]);
+
+        // Membuat beberapa dokter untuk data "Pilih Dokter"
+        $dokter1 = Dokter::factory()->create();
+        $dokter2 = Dokter::factory()->create();
+
+        // Login sebagai user pasien
+        $this->actingAs($user);
+
+        // Hit endpoint untuk dashboard keluhan
+        $response = $this->get(route('pasien.dashboard-keluhan'));
+
+        // Memastikan halaman dimuat dengan sukses
+        $response->assertStatus(200);
+
+        // Memastikan data pasien dikirim ke view
+        $response->assertViewHas('pasien', function ($viewPasien) use ($pasien) {
+            return $viewPasien->pasien_id === $pasien->pasien_id;
+        });
+
+        // Memastikan data dokter dikirim ke view
+        $response->assertViewHas('doctors', function ($viewDoctors) use ($dokter1, $dokter2) {
+            return $viewDoctors->contains('doctor_id', $dokter1->doctor_id) &&
+                   $viewDoctors->contains('doctor_id', $dokter2->doctor_id);
+        });
+    }
 }
